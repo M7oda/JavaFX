@@ -1,0 +1,33 @@
+.title{
+
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+}
+
+.button{
+
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-font-family: "Arial";
+    -fx-background-color: #11b2e5;
+}
+
+.label{
+
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+    -fx-font-family: "Arial";
+}
+
+.text-field:hover{
+    -fx-background-color: purple;
+}
+
+.root{
+
+    -fx-background-color: red;
+}
