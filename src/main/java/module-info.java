@@ -3,6 +3,7 @@ module com.example.demo5 {
     requires javafx.fxml;
     requires jdk.jdi;
     requires java.sql;
+    requires java.desktop;
 
 
     opens com.example.demo5 to javafx.fxml;

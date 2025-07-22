@@ -16,7 +16,9 @@ public class AdminPage {
     AddNewStudentPage addNewStudentPage;
     AddNewTeacherPage addNewTeacherPage;
     Button logOutButton;
+    Button showAllStudentsButton;
     LogIn logIn;
+    ShowAllStudentsPage showAllStudentsPage;
     GridPane gridPane;
     Stage stage;
 
@@ -34,6 +36,7 @@ public class AdminPage {
         addNewStudentButton = new Button("Add New Student");
         addNewTeacherButton = new Button("Add New Teacher");
         logOutButton = new Button("Log Out");
+        showAllStudentsButton = new Button("Show All Students");
         try {
             addNewStudentPage = new AddNewStudentPage(stage);
         } catch (IOException e) {
@@ -52,7 +55,8 @@ public class AdminPage {
         gridPane.add(welcomeLabel,0,0);
         gridPane.add(addNewStudentButton,0,1);
         gridPane.add(addNewTeacherButton,0,2);
-        gridPane.add(logOutButton,0,3);
+        gridPane.add(showAllStudentsButton,0,3);
+        gridPane.add(logOutButton,0,4);
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setAlignment(Pos.CENTER);
@@ -63,6 +67,7 @@ public class AdminPage {
         addNewStudentButton.getStyleClass().add("button");
         addNewTeacherButton.getStyleClass().add("button");
         logOutButton.getStyleClass().add("button");
+        showAllStudentsButton.getStyleClass().add("button");
     }
 
     void initActions()  {
@@ -87,6 +92,12 @@ public class AdminPage {
         logOutButton.setOnAction(event -> {
             Scene scene = logIn.getScene();
             scene.getStylesheets().add("Style.css");
+            stage.setScene(scene);
+            stage.show();
+        });
+        showAllStudentsButton.setOnAction(event -> {
+            showAllStudentsPage = new ShowAllStudentsPage(stage);
+            Scene scene = showAllStudentsPage.getScene();
             stage.setScene(scene);
             stage.show();
         });

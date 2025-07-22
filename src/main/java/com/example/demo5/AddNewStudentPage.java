@@ -16,8 +16,10 @@ public class AddNewStudentPage {
     Label nameLabel;
     Label emailLabel;
     Label passwordLabel;
+    Label levelLabel;
     TextField nameTextField;
     TextField emailTextField;
+    TextField levelTextField;
     PasswordField passwordTextField;
     Button addNewStudentButton;
     Button backButton;
@@ -41,8 +43,10 @@ public class AddNewStudentPage {
         emailTextField = new TextField();
         passwordTextField = new PasswordField();
         nameTextField = new TextField();
+        levelTextField = new TextField();
         addNewStudentButton = new Button("Add New Student");
         backButton = new Button("Back");
+        levelLabel = new Label("Level");
         gridPane = new GridPane();
     }
 
@@ -53,8 +57,10 @@ public class AddNewStudentPage {
         gridPane.add(nameTextField,1,0);
         gridPane.add(emailTextField,1,1);
         gridPane.add(passwordTextField,1,2);
-        gridPane.add(addNewStudentButton,0,3);
-        gridPane.add(backButton,1,3);
+        gridPane.add(levelLabel,0,3);
+        gridPane.add(levelTextField,1,3);
+        gridPane.add(addNewStudentButton,0,4);
+        gridPane.add(backButton,1,4);
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setAlignment(Pos.CENTER);
@@ -69,6 +75,8 @@ public class AddNewStudentPage {
         passwordTextField.getStyleClass().add("text-field");
         nameTextField.getStyleClass().add("text-field");
         backButton.getStyleClass().add("button");
+        levelTextField.getStyleClass().add("text-field");
+        levelLabel.getStyleClass().add("label");
     }
 
     void initActions(){
@@ -76,7 +84,8 @@ public class AddNewStudentPage {
             String email = emailTextField.getText();
             String password = passwordTextField.getText();
             String name = nameTextField.getText();
-            if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")){
+            int level = Integer.parseInt(levelTextField.getText());
+            if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$"  ) && level<0 && level>5 ){
                 try {
                     Class.forName("org.sqlite.JDBC");
                 } catch (ClassNotFoundException e) {
@@ -90,7 +99,7 @@ public class AddNewStudentPage {
                 }
                 try {
                     Statement statement = connection.createStatement();
-                    String query = "INSERT INTO Students (name, email, password) VALUES ('" + name + "', '" + email + "', '" + password + "')";
+                    String query = "INSERT INTO Students (name , email, password , level ) VALUES ('" + name + "', '" + email + "', '" + password + "' , '" +  level + "' )";
                     statement.executeUpdate(query);
                 } catch (SQLException e) {
                     System.out.println(e);
@@ -132,7 +141,12 @@ public class AddNewStudentPage {
                     alert.setTitle("Error");
                     alert.setHeaderText("The password is empty");
                     alert.showAndWait();
-                }else {
+                } else if (level <0 || level >5) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("The level is out of range");
+                    alert.showAndWait();
+                } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText("Invalid email");
