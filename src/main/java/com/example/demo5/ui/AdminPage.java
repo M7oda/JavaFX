@@ -1,6 +1,5 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
-import com.example.demo5.ui.AddNewStudentPage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,7 +17,7 @@ public class AdminPage {
     AddNewTeacherPage addNewTeacherPage;
     Button logOutButton;
     Button showAllStudentsButton;
-    LogIn logIn;
+    LogInPage logInPage;
     ShowAllStudentsPage showAllStudentsPage;
     GridPane gridPane;
     Stage stage;
@@ -45,7 +44,7 @@ public class AdminPage {
         }
         try {
             addNewTeacherPage = new AddNewTeacherPage(stage);
-            logIn = new LogIn(stage);
+            logInPage = new LogInPage(stage);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -91,7 +90,7 @@ public class AdminPage {
             stage.show();
         });
         logOutButton.setOnAction(event -> {
-            Scene scene = logIn.getScene();
+            Scene scene = logInPage.getScene();
             scene.getStylesheets().add("Style.css");
             stage.setScene(scene);
             stage.show();

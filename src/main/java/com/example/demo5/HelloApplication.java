@@ -1,19 +1,19 @@
 package com.example.demo5;
 
+import com.example.demo5.ui.LogInPage;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.sql.*;
 
 import java.io.IOException;
 
 public class HelloApplication extends Application {
-LogIn logIn;
+LogInPage logInPage;
     public void start(Stage stage) throws IOException {
         
-        logIn = new LogIn(stage);
+        logInPage = new LogInPage(stage);
 
-        Scene scene = logIn.getScene();
+        Scene scene = logInPage.getScene();
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.show();

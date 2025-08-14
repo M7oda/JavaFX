@@ -1,4 +1,4 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.*;
 
-public class LogIn {
+public class LogInPage {
     Label emailLabel;
     Label passwordLabel;
     TextField emailTextField;
@@ -25,7 +25,7 @@ public class LogIn {
     StudentPage studentPage;
     TeacherPage teacherPage;
 
-    public LogIn(Stage stage)throws IOException {
+    public LogInPage(Stage stage)throws IOException {
         this.stage = stage;
         initControls();
         renderScene();
@@ -190,7 +190,7 @@ public class LogIn {
         });
     }
 
-    Scene getScene(){
+    public Scene getScene(){
         return new Scene(gridPane,600,400);
     }
 }

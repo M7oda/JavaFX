@@ -1,4 +1,4 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,11 +15,13 @@ public class TeacherPage {
     Button logOutButton;
     int teacherID;
     Stage stage;
-    LogIn logIn;
+    LogInPage logInPage;
     TeacherProfilePage teacherProfilePage;
     GridPane grid;
     SearchStudentPage searchStudentPage;
     SetDegreePage setDegreePage;
+    StudentsTableView studentsTableView;
+    SetDegreePageTableView setDegreePageTableView;
 
 
     TeacherPage (Stage stage , int teacherID) throws IOException {
@@ -67,8 +69,8 @@ public class TeacherPage {
         });
         logOutButton.setOnAction(event -> {
            try{
-               logIn = new LogIn(stage);
-               Scene scene = logIn.getScene();
+               logInPage = new LogInPage(stage);
+               Scene scene = logInPage.getScene();
                scene.getStylesheets().add("Style.css");
                stage.setScene(scene);
            } catch (Exception e) {
@@ -89,15 +91,23 @@ public class TeacherPage {
         });
 
         setDegreeButton.setOnAction(event -> {
-           try{
-               setDegreePage = new SetDegreePage(stage,teacherID);
-               Scene scene = setDegreePage.getScene();
-               scene.getStylesheets().add("Style.css");
-               stage.setScene(scene);
-               stage.show();
-           }catch (Exception e){
-               System.out.println(e);
-           }
+//           try{
+//               setDegreePage = new SetDegreePage(stage,teacherID);
+//               Scene scene = setDegreePage.getScene();
+//               scene.getStylesheets().add("Style.css");
+//               stage.setScene(scene);
+//               stage.show();
+//           }catch (Exception e){
+//               System.out.println(e);
+//           }
+            try{
+                setDegreePageTableView = new SetDegreePageTableView(stage , teacherID);
+                Scene scene = setDegreePageTableView.getScene();
+                stage.setScene(scene);
+                stage.show();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         });
     }
     Scene getScene(){

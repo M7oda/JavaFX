@@ -1,5 +1,8 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
+import com.example.demo5.db.SqlLiteStudentDataAccessLayerImpl;
+import com.example.demo5.model.ErrorDTO;
+import com.example.demo5.service.AddNewStudentService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -7,10 +10,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class AddNewStudentPage {
     Label nameLabel;
@@ -25,7 +24,6 @@ public class AddNewStudentPage {
     Button backButton;
     GridPane gridPane;
     Stage stage;
-
 
     public AddNewStudentPage(Stage stage) throws IOException {
         this.stage = stage;
@@ -81,79 +79,32 @@ public class AddNewStudentPage {
 
     void initActions(){
        addNewStudentButton.setOnAction(event -> {
-            String email = emailTextField.getText();
-            String password = passwordTextField.getText();
-            String name = nameTextField.getText();
-            int level = Integer.parseInt(levelTextField.getText());
-            if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$"  ) && level<0 && level>5 ){
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                } catch (ClassNotFoundException e) {
-                    System.out.println(e);
-                }
-                Connection connection = null;
-                try {
-                    connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
-                try {
-                    Statement statement = connection.createStatement();
-                    String query = "INSERT INTO Students (name , email, password , level ) VALUES ('" + name + "', '" + email + "', '" + password + "' , '" +  level + "' )";
-                    statement.executeUpdate(query);
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
-
+           SqlLiteStudentDataAccessLayerImpl  sqlLiteStudentDataAccessLayer = new SqlLiteStudentDataAccessLayerImpl();
+           AddNewStudentService addStudentService = new AddNewStudentService(sqlLiteStudentDataAccessLayer);
+           ErrorDTO errorDTO = addStudentService.prepareToCreateStudent( nameTextField.getText() , emailTextField.getText() , passwordTextField.getText() , levelTextField.getText());
+            if ( errorDTO.getError() == null){
+                sqlLiteStudentDataAccessLayer.saveStudent(nameTextField.getText() , emailTextField.getText() , passwordTextField.getText() , Integer.parseInt(levelTextField.getText()));
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Done");
                 alert.setHeaderText("Add New Student Successfully");
                 alert.showAndWait();
                 try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
-                try {
-
                     AdminPage adminPage = new AdminPage(stage);
                     Scene scene = adminPage.getScene();
                     scene.getStylesheets().add("style.css");
                     stage.setScene(scene);
                     stage.show();
-                }catch (IOException e){
+                } catch (IOException e) {
                     System.out.println(e);
                 }
-
             }else {
-                if (name.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The name is empty");
-                    alert.showAndWait();
-                }else if (email.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The email is empty");
-                    alert.showAndWait();
-                }else if (password.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The password is empty");
-                    alert.showAndWait();
-                } else if (level <0 || level >5) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The level is out of range");
-                    alert.showAndWait();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Invalid email");
-                    alert.showAndWait();
-                }
-
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(errorDTO.getError());
+                alert.showAndWait();
             }
+
+
         });
         backButton.setOnAction(event -> {
             try {
@@ -168,7 +119,7 @@ public class AddNewStudentPage {
         });
     }
 
-    Scene getScene(){
+   public Scene getScene(){
         return new Scene(gridPane,600,400);
     }
 

@@ -1,4 +1,4 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,7 +27,7 @@ Label studentLevelReselteLabel;
 GridPane gridPane;
 Stage stage;
 int teacherId;
-TeacherPage  teacherPage;
+TeacherPage teacherPage;
 
 SearchStudentPage(Stage stage , int teacherId ){
     this.stage=stage;

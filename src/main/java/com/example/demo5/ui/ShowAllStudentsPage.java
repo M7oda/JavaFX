@@ -1,9 +1,8 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ ShowAllStudentsPage(Stage stage){
     }
 
     void renderScene(){
-        borderPane.setCenter(StudentsTableView.createStudentsTableView());
+        borderPane.setCenter(StudentsTableView.createStudentsTableViewForAdmin());
         backButton.getStyleClass().add("button");
         borderPane.setBottom(backButton);
     }

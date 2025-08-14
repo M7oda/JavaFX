@@ -1,5 +1,10 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
+import com.example.demo5.db.SqlLiteTeacherDataAccessLayerImpl;
+import com.example.demo5.db.TeacherDataAccessLayer;
+import com.example.demo5.model.ErrorDTO;
+import com.example.demo5.model.Teacher;
+import com.example.demo5.service.AddNewTeacherService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -80,79 +85,29 @@ public class AddNewTeacherPage {
 
     void initActions(){
         addNewTeacherButton.setOnAction(event -> {
-            String email = emailTextField.getText();
-            String password = passwordTextField.getText();
-            String name = nameTextField.getText();
-            String phone = phoneTextField.getText();
-            if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")&&!phone.isEmpty()){
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                } catch (ClassNotFoundException e) {
-                    System.out.println(e);
-                }
-                Connection connection = null;
-                try {
-                    connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
-                try {
-                    Statement statement = connection.createStatement();
-                    String query = "INSERT INTO Teachers (name, phoneNO ,email, password) VALUES ('" + name + "', '" + phone + "' ,'" + email + "', '" + password + "')";
-
-                    statement.executeUpdate(query);
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
-
+            SqlLiteTeacherDataAccessLayerImpl sqlLiteTeacherDataAccessLayer = new SqlLiteTeacherDataAccessLayerImpl();
+            AddNewTeacherService addNewTeacherService = new AddNewTeacherService(sqlLiteTeacherDataAccessLayer);
+            ErrorDTO errorDTO = addNewTeacherService.prepareToCreateTeacher(nameTextField.getText(),phoneTextField.getText(),emailTextField.getText(),passwordTextField.getText());
+            if (errorDTO.getError() == null){
+                sqlLiteTeacherDataAccessLayer.saveTeacher(nameTextField.getText(),phoneTextField.getText(),emailTextField.getText(),passwordTextField.getText());
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Done");
                 alert.setHeaderText("Add New Teacher Successfully");
                 alert.showAndWait();
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
-                try {
-
+                try{
                     AdminPage adminPage = new AdminPage(stage);
                     Scene scene = adminPage.getScene();
-                    scene.getStylesheets().add("style.css");
+                    scene.getStylesheets().add("Style.css");
                     stage.setScene(scene);
                     stage.show();
-                }catch (IOException e){
+                }catch (Exception e){
                     System.out.println(e);
                 }
-
             }else {
-                if (name.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The name is empty");
-                    alert.showAndWait();
-                }else if (email.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The email is empty");
-                    alert.showAndWait();
-                }else if (password.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The password is empty");
-                    alert.showAndWait();
-                } else if (phone.isEmpty()) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The phone number is empty");
-                    alert.showAndWait();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Invalid email");
-                    alert.showAndWait();
-                }
-
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(errorDTO.getError());
+                alert.showAndWait();
             }
         });
 

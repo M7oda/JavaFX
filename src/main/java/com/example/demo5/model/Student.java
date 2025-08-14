@@ -1,8 +1,8 @@
-package com.example.demo5;
+package com.example.demo5.model;
 
 import javafx.beans.property.*;
 
-public class Students {
+public class Student {
     IntegerProperty id;
     StringProperty name;
     StringProperty email;
@@ -10,7 +10,7 @@ public class Students {
     DoubleProperty cgpa;
     IntegerProperty level;
 
-    Students(int id, String name, String email, String password, double cgpa ,  int level) {
+    public  Student(int id, String name, String email, String password, double cgpa , int level) {
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
         this.email = new SimpleStringProperty(email);
@@ -35,5 +35,8 @@ public class Students {
     }
     public int getId() {
         return id.get();
+    }
+    public void setCgpa(double cgpa){
+        this.cgpa.set(cgpa);
     }
 }

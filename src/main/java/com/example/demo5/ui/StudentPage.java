@@ -1,4 +1,4 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,7 +20,7 @@ public class StudentPage {
     GridPane gridPain;
     int studentId;
     Stage stage;
-    LogIn logIn;
+    LogInPage logInPage;
 
     public StudentPage(Stage stage ,int id) {
         this.stage = stage;
@@ -80,8 +80,8 @@ public class StudentPage {
                 try {
 
 
-                logIn = new LogIn(stage);
-                    Scene scene = logIn.getScene();
+                logInPage = new LogInPage(stage);
+                    Scene scene = logInPage.getScene();
                     scene.getStylesheets().add("style.css");
                     stage.setScene(scene);
                     stage.show();

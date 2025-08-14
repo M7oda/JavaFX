@@ -1,4 +1,4 @@
-package com.example.demo5;
+package com.example.demo5.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
