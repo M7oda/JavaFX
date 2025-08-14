@@ -1,5 +1,6 @@
 package com.example.demo5;
 
+import com.example.demo5.ui.AddNewStudentPage;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -104,7 +105,7 @@ public class AdminPage {
     }
 
 
-    Scene getScene(){
+   public Scene getScene(){
        return  new Scene(gridPane,600,400);
     }
 

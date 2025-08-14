@@ -1,8 +1,8 @@
 package com.example.demo5;
 
+import com.example.demo5.model.Student;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -13,14 +13,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class StudentsTableView{
-    static TableView<Students> createStudentsTableView() {
-        TableView<Students> studentsTableView = new TableView<>();
-        TableColumn<Students,Integer> idColumn = new TableColumn<>("ID");
-        TableColumn<Students, String> nameColumn =  new TableColumn<>("Name");
-        TableColumn<Students, String> emailColumn =  new TableColumn<>("Email");
-        TableColumn<Students, String> passwordColumn =  new TableColumn<>("Password");
-        TableColumn<Students,Double> cgpaColumn =  new TableColumn<>("CGPA");
-        TableColumn<Students,Integer>levelColumn =  new TableColumn<>("Level");
+    static TableView<Student> createStudentsTableView() {
+        TableView<Student> studentsTableView = new TableView<>();
+        TableColumn<Student,Integer> idColumn = new TableColumn<>("ID");
+        TableColumn<Student, String> nameColumn =  new TableColumn<>("Name");
+        TableColumn<Student, String> emailColumn =  new TableColumn<>("Email");
+        TableColumn<Student, String> passwordColumn =  new TableColumn<>("Password");
+        TableColumn<Student,Double> cgpaColumn =  new TableColumn<>("CGPA");
+        TableColumn<Student,Integer>levelColumn =  new TableColumn<>("Level");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -34,11 +34,11 @@ public class StudentsTableView{
             String query = "SELECT * FROM students ";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-            ObservableList<Students> studentsList = FXCollections.observableArrayList();
+            ObservableList<Student> studentList = FXCollections.observableArrayList();
             while (resultSet.next()) {
-                studentsList.add(new Students(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("email"),resultSet.getString("password"),resultSet.getDouble("cgpa"),resultSet.getInt("level")));
+                studentList.add(new Student(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("email"),resultSet.getString("password"),resultSet.getDouble("cgpa"),resultSet.getInt("level")));
             }
-            studentsTableView.setItems(studentsList);
+            studentsTableView.setItems(studentList);
 
         } catch (Exception e) {
             System.out.println(e);
