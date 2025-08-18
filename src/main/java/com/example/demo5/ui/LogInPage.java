@@ -14,7 +14,7 @@ public class LogInPage {
     Label emailLabel;
     Label passwordLabel;
     TextField emailTextField;
-    PasswordField passwordTextField;
+    TextField passwordTextField;
     Button loginButton;
     GridPane gridPane;
     Label welcomeLabel;
@@ -37,7 +37,7 @@ public class LogInPage {
         emailLabel = new Label("Email:");
         passwordLabel = new Label("Password:");
         emailTextField = new TextField();
-        passwordTextField = new PasswordField();
+        passwordTextField = new TextField();
         loginButton = new Button("Login");
         gridPane = new GridPane();
         welcomeLabel = new Label("Welcome to the Login Page");

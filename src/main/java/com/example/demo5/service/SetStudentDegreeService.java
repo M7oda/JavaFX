@@ -26,7 +26,7 @@ public class SetStudentDegreeService {
             return new ErrorDTO("CGPA is empty");
         } else if (level.isEmpty()) {
             return new ErrorDTO("Level is empty");
-        } else if (!name.matches("[a-zA-Z]*")) {
+        } else if (!name.matches("[a-zA-Z\\s]*")) {
             return new ErrorDTO("Name only letters");
         } else if (!cgpa.matches("\\d*(\\.\\d*)?")) {
             return new ErrorDTO("CGPA only numbers");

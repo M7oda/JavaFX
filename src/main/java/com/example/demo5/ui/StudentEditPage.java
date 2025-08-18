@@ -94,7 +94,6 @@ public class StudentEditPage {
                     alert.showAndWait();
                     SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacherId);
                     Scene scene = setDegreePageTableView.getScene();
-                    scene.getStylesheets().add("Style.css");
                     stage.setScene(scene);
                     stage.show();
                 }

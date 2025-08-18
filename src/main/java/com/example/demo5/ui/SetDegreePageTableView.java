@@ -1,9 +1,7 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.db.SqlLiteStudentDataAccessLayerImpl;
-import com.example.demo5.model.ErrorDTO;
 import com.example.demo5.model.Student;
-import com.example.demo5.service.SetStudentDegreeService;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -22,6 +20,8 @@ public class SetDegreePageTableView {
     Button backButton;
     int teacherId;
     Button selectButton;
+    TextField searchByNameTextField;
+    TextField searchByIdTextField;
 
     public SetDegreePageTableView(Stage stage , int teacherId){
         this.stage = stage;
@@ -35,15 +35,45 @@ public class SetDegreePageTableView {
         borderPane = new BorderPane();
         backButton = new Button("Back");
         selectButton = new Button("Select Student");
+        searchByNameTextField = new TextField();
+        searchByNameTextField.setPromptText("Search by name : ");
+        searchByIdTextField = new TextField();
+        searchByIdTextField.setPromptText("Search by ID : ");
     }
 
     public void renderScene(){
+        borderPane.setTop(searchByNameTextField);
         borderPane.setCenter(StudentsTableView.createTableViewForTeacher());
         selectButton.getStyleClass().add("Button");
         borderPane.setBottom(selectButton);
-        VBox bottomBox = new VBox(10 , selectButton, backButton);
+        VBox bottomBox = new VBox(10 , searchByIdTextField , searchByNameTextField,selectButton, backButton);
         bottomBox.setAlignment(Pos.CENTER);
         borderPane.setBottom(bottomBox);
+        FilteredList<Student> studentFilteredList = new FilteredList<>(StudentsTableView.studentObservableList, p -> true);
+
+        Runnable updateFilter = () -> {
+            String nameFilter = searchByNameTextField.getText() != null
+                    ? searchByNameTextField.getText().toLowerCase()
+                    : "";
+            String idFilter = searchByIdTextField.getText() != null
+                    ? searchByIdTextField.getText().toLowerCase()
+                    : "";
+
+            studentFilteredList.setPredicate(student -> {
+                boolean matchesName = nameFilter.isEmpty() ||
+                        student.getName().toLowerCase().contains(nameFilter);
+
+                boolean matchesId = idFilter.isEmpty() ||
+                        String.valueOf(student.getId()).toLowerCase().contains(idFilter);
+
+                return matchesName && matchesId;
+            });
+        };
+
+        searchByNameTextField.textProperty().addListener((obs, oldVal, newVal) -> updateFilter.run());
+        searchByIdTextField.textProperty().addListener((obs, oldVal, newVal) -> updateFilter.run());
+
+        StudentsTableView.teacherTableView.setItems(studentFilteredList);
 
     }
     void applyScene(){

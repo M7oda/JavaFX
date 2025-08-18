@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 public class StudentsTableView{
     public static TableView teacherTableView = new TableView<>();
     public static TableView<Student> studentsTableView = new TableView<>();
+    public static ObservableList<Student> studentObservableList;
+    public static ObservableList<Student> studentList;
 
 
 
@@ -40,7 +42,7 @@ public class StudentsTableView{
             String query = "SELECT * FROM students ";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-            ObservableList<Student> studentList = FXCollections.observableArrayList();
+            studentList = FXCollections.observableArrayList();
             while (resultSet.next()) {
                 studentList.add(new Student(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("email"),resultSet.getString("password"),resultSet.getDouble("cgpa"),resultSet.getInt("level")));
             }
@@ -69,7 +71,7 @@ public class StudentsTableView{
             String query = "SELECT * FROM students ";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-            ObservableList<Student> studentObservableList = FXCollections.observableArrayList();
+            studentObservableList = FXCollections.observableArrayList();
             while (resultSet.next()){
                 studentObservableList.add(new Student(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("email"),resultSet.getString("password"),resultSet.getDouble("cgpa"),resultSet.getInt("level")));
             }
