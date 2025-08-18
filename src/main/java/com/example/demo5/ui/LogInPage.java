@@ -1,5 +1,6 @@
 package com.example.demo5.ui;
 
+import com.example.demo5.db.CreateConnection;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -72,17 +73,8 @@ public class LogInPage {
             String email = emailTextField.getText();
             String password = passwordTextField.getText();
             if (!email.isEmpty() && !password.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$" )){
-                try {
-                    Class.forName("org.sqlite.JDBC");
-                } catch (ClassNotFoundException e) {
-                    System.out.println(e);
-                }
-                Connection connection = null;
-                try {
-                    connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
-                } catch (SQLException e) {
-                    System.out.println(e);
-                }
+
+                Connection connection = CreateConnection.createConnection();
                 try {
                     String query = "SELECT * FROM Students WHERE email = ? AND password = ?";
                     PreparedStatement statement = connection.prepareStatement(query);
