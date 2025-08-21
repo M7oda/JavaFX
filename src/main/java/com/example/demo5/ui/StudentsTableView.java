@@ -37,8 +37,7 @@ public class StudentsTableView{
         levelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
         studentsTableView.getColumns().addAll(idColumn, nameColumn, emailColumn, passwordColumn, cgpaColumn, levelColumn);
         try {
-            Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
+            Connection connection = CreateConnection.createConnection();
             String query = "SELECT * FROM students ";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();

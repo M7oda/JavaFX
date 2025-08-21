@@ -1,5 +1,6 @@
 package com.example.demo5.ui;
 
+import com.example.demo5.db.CreateConnection;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -33,21 +34,20 @@ public class StudentPage {
 
     void initControls(){
         try {
-            Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
+            gridPain = new GridPane();
+            Connection connection = CreateConnection.createConnection();
             String query = "SELECT * FROM students WHERE id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, studentId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            idLabel = new Label("ID : " +  resultSet.getString("id"));
-            nameLabel = new Label("Name : " +  resultSet.getString("name"));
-            emailLabel = new Label("Email : " +  resultSet.getString("email"));
-            levelLabel = new Label("Level : " +  resultSet.getString("level"));
-            cgpaLabel = new Label("CGPA : " +  resultSet.getString("cgpa"));
-            connection.close();
-            logOutButton = new Button("Log Out");
-            gridPain = new GridPane();
-
+            if (resultSet.next()) {
+                idLabel = new Label("ID : " + resultSet.getString("id"));
+                nameLabel = new Label("Name : " + resultSet.getString("name"));
+                emailLabel = new Label("Email : " + resultSet.getString("email"));
+                levelLabel = new Label("Level : " + resultSet.getString("level"));
+                cgpaLabel = new Label("CGPA : " + resultSet.getString("cgpa"));
+                logOutButton = new Button("Log Out");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }

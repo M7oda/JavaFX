@@ -3,6 +3,7 @@ package com.example.demo5.ui;
 import com.example.demo5.db.SqlLiteStudentDataAccessLayerImpl;
 import com.example.demo5.model.ErrorDTO;
 import com.example.demo5.service.AddNewStudentService;
+import com.example.demo5.service.PasswordHashingService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class AddNewStudentPage {
     Label nameLabel;
@@ -83,7 +85,13 @@ public class AddNewStudentPage {
            AddNewStudentService addStudentService = new AddNewStudentService(sqlLiteStudentDataAccessLayer);
            ErrorDTO errorDTO = addStudentService.prepareToCreateStudent( nameTextField.getText() , emailTextField.getText() , passwordTextField.getText() , levelTextField.getText());
             if ( errorDTO.getError() == null){
-                sqlLiteStudentDataAccessLayer.saveStudent(nameTextField.getText() , emailTextField.getText() , passwordTextField.getText() , Integer.parseInt(levelTextField.getText()));
+                String hashPassword;
+                try {
+                     hashPassword = PasswordHashingService.getHash(passwordTextField.getText());
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
+                }
+                sqlLiteStudentDataAccessLayer.saveStudent(nameTextField.getText() , emailTextField.getText() , hashPassword , Integer.parseInt(levelTextField.getText()));
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Done");
                 alert.setHeaderText("Add New Student Successfully");

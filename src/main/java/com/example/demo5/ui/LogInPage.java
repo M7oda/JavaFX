@@ -1,6 +1,7 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.db.CreateConnection;
+import com.example.demo5.service.PasswordHashingService;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class LogInPage {
@@ -76,10 +78,11 @@ public class LogInPage {
 
                 Connection connection = CreateConnection.createConnection();
                 try {
+                    String hashPassword = PasswordHashingService.getHash(password);
                     String query = "SELECT * FROM Students WHERE email = ? AND password = ?";
                     PreparedStatement statement = connection.prepareStatement(query);
                     statement.setString(1, email);
-                    statement.setString(2, password);
+                    statement.setString(2, hashPassword);
                     ResultSet resultSet = statement.executeQuery();
                     if (resultSet.next()) {
                         String name = resultSet.getString("name");
@@ -99,7 +102,7 @@ public class LogInPage {
                         String teacherQuery = "SELECT * FROM Teachers WHERE email = ? AND password = ?";
                         PreparedStatement teacherStatement = connection.prepareStatement(teacherQuery);
                         teacherStatement.setString(1, email);
-                        teacherStatement.setString(2, password);
+                        teacherStatement.setString(2, hashPassword);
                         ResultSet teacherResultSet = teacherStatement.executeQuery();
                         if (teacherResultSet.next()) {
                             teacherId = teacherResultSet.getInt("id");
@@ -123,10 +126,10 @@ public class LogInPage {
                             String adminQuery = "SELECT * FROM Admins WHERE email = ? AND password = ?";
                             PreparedStatement adminStatement = connection.prepareStatement(adminQuery);
                             adminStatement.setString(1, email);
-                            adminStatement.setString(2, password);
+                            adminStatement.setString(2, hashPassword);
                             ResultSet adminResultSet = adminStatement.executeQuery();
-                            String adminName = adminResultSet.getString("name");
                             if (adminResultSet.next()) {
+                                String adminName = adminResultSet.getString("name");
                                 Alert  alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Done");
                                 alert.setHeaderText("Log In Successfully");
@@ -153,6 +156,8 @@ public class LogInPage {
 
                 } catch (SQLException e) {
                     System.out.println(e);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new RuntimeException(e);
                 }
 
 

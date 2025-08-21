@@ -1,11 +1,13 @@
 package com.example.demo5;
 
+import com.example.demo5.service.PasswordHashingService;
 import com.example.demo5.ui.LogInPage;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class HelloApplication extends Application {
 LogInPage logInPage;
@@ -17,6 +19,11 @@ LogInPage logInPage;
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.show();
+//        try {
+//            System.out.println(PasswordHashingService.getHash("mahmoud"));
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
     public static void main(String[] args) {
