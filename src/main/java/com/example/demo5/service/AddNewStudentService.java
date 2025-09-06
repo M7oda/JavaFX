@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class AddNewStudentService {
 
@@ -18,8 +19,14 @@ public class AddNewStudentService {
         this.studentDataAccessLayer = studentDataAccessLayer;
     }
 
-    public ErrorDTO prepareToCreateStudent(String name , String email , String password , String level){
-        if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$") && !level.isEmpty() ) {
+    public ErrorDTO prepareToCreateStudent(String name , String email , String password){
+        if (!name.isEmpty() && !password.isEmpty() && !email.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$") && name.matches("[a-zA-Z\\s]+")) {
+            try {
+                String hashPassword = PasswordHashingService.getHash(password);
+                studentDataAccessLayer.saveStudent(name, email, hashPassword);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
 
         }else {
             if (name.isEmpty()){
@@ -28,12 +35,10 @@ public class AddNewStudentService {
                 return new ErrorDTO("The email is empty");
             }else if (password.isEmpty()){
                 return new ErrorDTO("The password is empty");
-            } else if (level.isEmpty()) {
-                return new ErrorDTO("The level is Empty");
-            } else if (Integer.parseInt(level) <= 0 || Integer.parseInt(level) >= 5 ) {
-                return new ErrorDTO("Level out of range");
-            } else if(!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+            }else if(!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
                 return new ErrorDTO("Invalid email");
+            } else if (!name.matches("[a-zA-Z\\s]+")) {
+                return new ErrorDTO("Name must be only letters");
             }
         }
         return new ErrorDTO(null);

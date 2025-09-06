@@ -1,5 +1,6 @@
 package com.example.demo5.ui;
 
+import com.example.demo5.model.Teacher;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -26,12 +27,12 @@ Label studentCgpaReselteLabel;
 Label studentLevelReselteLabel;
 GridPane gridPane;
 Stage stage;
-int teacherId;
 TeacherPage teacherPage;
+Teacher teacher;
 
-SearchStudentPage(Stage stage , int teacherId ){
+SearchStudentPage(Stage stage , Teacher teacher){
     this.stage=stage;
-    this.teacherId=teacherId;
+    this.teacher=teacher;
     initControls();
     renderScene();
     applyScene();
@@ -78,7 +79,7 @@ void applyScene(){
 void initActions(){
     backButton.setOnAction(event->{
         try {
-            teacherPage = new TeacherPage(stage, teacherId);
+            teacherPage = new TeacherPage(stage, teacher);
             Scene scene = teacherPage.getScene();
             scene.getStylesheets().add("style.css");
             stage.setScene(scene);
@@ -98,9 +99,9 @@ void initActions(){
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                  studentIdReselteLabel.setText("Student ID : "+resultSet.getString("id"));
-                 studentNameReselteLabel.setText("Name : "+resultSet.getString("name"));
-                 studentLevelReselteLabel.setText("Level : "+resultSet.getString("level"));
-                 studentCgpaReselteLabel.setText("CGPA : "+resultSet.getString("cgpa"));
+                 studentNameReselteLabel.setText("Name : "+resultSet.getString("studentName"));
+                 studentLevelReselteLabel.setText("Level : "+resultSet.getString("studentLevel"));
+                 studentCgpaReselteLabel.setText("CGPA : "+resultSet.getString("studentCgpa"));
                 connection.close();
             }else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);

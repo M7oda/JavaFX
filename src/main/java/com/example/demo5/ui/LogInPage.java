@@ -1,7 +1,15 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.db.CreateConnection;
-import com.example.demo5.service.PasswordHashingService;
+import com.example.demo5.db.SSMSAdminDataAccessLayerImpl;
+import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
+import com.example.demo5.db.SSMSTeacherDataAccessLayerImpl;
+import com.example.demo5.model.Admin;
+import com.example.demo5.model.LoginResponse;
+import com.example.demo5.model.Student;
+import com.example.demo5.model.Teacher;
+import com.example.demo5.service.AdminLoginService;
+import com.example.demo5.service.StudentLoginService;
+import com.example.demo5.service.TeacherLoginService;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,14 +18,12 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.*;
 
 public class LogInPage {
     Label emailLabel;
     Label passwordLabel;
     TextField emailTextField;
-    TextField passwordTextField;
+    PasswordField passwordTextField;
     Button loginButton;
     GridPane gridPane;
     Label welcomeLabel;
@@ -27,6 +33,11 @@ public class LogInPage {
     int teacherId;
     StudentPage studentPage;
     TeacherPage teacherPage;
+    RadioButton studentRadioButton;
+    RadioButton teacherRadioButton;
+    RadioButton adminRadioButton;
+    ToggleGroup loginToggleGroup;
+    Label loginAsLabel;
 
     public LogInPage(Stage stage)throws IOException {
         this.stage = stage;
@@ -40,10 +51,18 @@ public class LogInPage {
         emailLabel = new Label("Email:");
         passwordLabel = new Label("Password:");
         emailTextField = new TextField();
-        passwordTextField = new TextField();
+        passwordTextField = new PasswordField();
         loginButton = new Button("Login");
         gridPane = new GridPane();
         welcomeLabel = new Label("Welcome to the Login Page");
+        teacherRadioButton = new RadioButton("Teacher");
+        adminRadioButton = new RadioButton("Admin");
+        studentRadioButton = new RadioButton("Student");
+        loginToggleGroup = new ToggleGroup();
+        studentRadioButton.setToggleGroup(loginToggleGroup);
+        teacherRadioButton.setToggleGroup(loginToggleGroup);
+        adminRadioButton.setToggleGroup(loginToggleGroup);
+        loginAsLabel = new Label("Login as : ");
     }
 
     void renderScene(){
@@ -52,7 +71,11 @@ public class LogInPage {
         gridPane.add(emailTextField,1,1);
         gridPane.add(passwordLabel,0,2);
         gridPane.add(passwordTextField,1,2);
-        gridPane.add(loginButton,0,3,2,1);
+        gridPane.add(loginAsLabel,0,3);
+        gridPane.add(adminRadioButton , 1,3);
+        gridPane.add(teacherRadioButton , 2,3);
+        gridPane.add(studentRadioButton,3,3);
+        gridPane.add(loginButton,0,4,2,1);
         GridPane.setHalignment(loginButton, HPos.CENTER );
         gridPane.setHgap(10);
         gridPane.setVgap(10);
@@ -67,123 +90,106 @@ public class LogInPage {
         loginButton.getStyleClass().add("button");
         emailTextField.getStyleClass().add("text-field");
         passwordTextField.getStyleClass().add("text-field");
+        loginAsLabel.getStyleClass().add("Label");
     }
 
     void initActions() {
 
         loginButton.setOnAction(event -> {
-            String email = emailTextField.getText();
-            String password = passwordTextField.getText();
-            if (!email.isEmpty() && !password.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$" )){
+            RadioButton selectedRadioButton = (RadioButton) loginToggleGroup.getSelectedToggle();
+            if (selectedRadioButton != null) {
 
-                Connection connection = CreateConnection.createConnection();
-                try {
-                    String hashPassword = PasswordHashingService.getHash(password);
-                    String query = "SELECT * FROM Students WHERE email = ? AND password = ?";
-                    PreparedStatement statement = connection.prepareStatement(query);
-                    statement.setString(1, email);
-                    statement.setString(2, hashPassword);
-                    ResultSet resultSet = statement.executeQuery();
-                    if (resultSet.next()) {
-                        String name = resultSet.getString("name");
-                        studentId = resultSet.getInt("id");
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Done");
-                        alert.setHeaderText("Log In Successfully");
-                        alert.setContentText("You have successfully logged in : " + name);
-                        alert.showAndWait();
-                        studentPage = new StudentPage(stage , resultSet.getInt("id"));
-                        Scene scene =  studentPage.getScene();
-                        scene.getStylesheets().add("Style.css");
-                        stage.setScene(scene);
-                        stage.show();
-
-                    }else {
-                        String teacherQuery = "SELECT * FROM Teachers WHERE email = ? AND password = ?";
-                        PreparedStatement teacherStatement = connection.prepareStatement(teacherQuery);
-                        teacherStatement.setString(1, email);
-                        teacherStatement.setString(2, hashPassword);
-                        ResultSet teacherResultSet = teacherStatement.executeQuery();
-                        if (teacherResultSet.next()) {
-                            teacherId = teacherResultSet.getInt("id");
-                            String teacherName = teacherResultSet.getString("name");
+                if (studentRadioButton.isSelected()) {
+                    SSMSStudentDataAccessLayerImpl studentDataAccessLayer = new SSMSStudentDataAccessLayerImpl();
+                    StudentLoginService studentLoginService = new StudentLoginService(studentDataAccessLayer);
+                    LoginResponse loginStudentResponse = studentLoginService.prepareStudentLogin(emailTextField.getText(), passwordTextField.getText());
+                    if (loginStudentResponse.getErrorDTO() == null) {
+                        if (loginStudentResponse.getObject() instanceof Student) {
+                            Student student = (Student) loginStudentResponse.getObject();
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Done");
                             alert.setHeaderText("Log In Successfully");
-                            alert.setContentText("You have successfully logged in : " + teacherName);
+                            alert.setContentText("You have successfully logged in : " + student.getName());
+                            alert.showAndWait();
+                            studentPage = new StudentPage(stage, student);
+                            Scene scene = studentPage.getScene();
+                            scene.getStylesheets().add("Style.css");
+                            stage.setScene(scene);
+                            stage.show();
+                        }
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(loginStudentResponse.getErrorDTO().getErrorMessage());
+                        alert.showAndWait();
+                    }
+                } else if (teacherRadioButton.isSelected()) {
+                    SSMSTeacherDataAccessLayerImpl ssmsTeacherDataAccessLayer = new SSMSTeacherDataAccessLayerImpl();
+                    TeacherLoginService teacherLoginService = new TeacherLoginService(ssmsTeacherDataAccessLayer);
+                    LoginResponse loginTeacherResponse = teacherLoginService.prepareTeacherLogin(emailTextField.getText(), passwordTextField.getText());
+
+                    if (loginTeacherResponse.getErrorDTO() == null) {
+                        if (loginTeacherResponse.getObject() instanceof Teacher) {
+                            Teacher teacher = (Teacher) loginTeacherResponse.getObject();
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Done");
+                            alert.setHeaderText("Log In Successfully");
+                            alert.setContentText("You have successfully logged in : " + teacher.getName());
                             alert.showAndWait();
                             try {
-                                teacherPage = new TeacherPage(stage, teacherId);
-                                Scene scene =  teacherPage.getScene();
+                                teacherPage = new TeacherPage(stage, teacher);
+                                Scene scene = teacherPage.getScene();
                                 scene.getStylesheets().add("Style.css");
                                 stage.setScene(scene);
                                 stage.show();
-                            }catch (Exception e){
-                                System.out.println(e);
-                            }
-
-                        }else {
-                            String adminQuery = "SELECT * FROM Admins WHERE email = ? AND password = ?";
-                            PreparedStatement adminStatement = connection.prepareStatement(adminQuery);
-                            adminStatement.setString(1, email);
-                            adminStatement.setString(2, hashPassword);
-                            ResultSet adminResultSet = adminStatement.executeQuery();
-                            if (adminResultSet.next()) {
-                                String adminName = adminResultSet.getString("name");
-                                Alert  alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle("Done");
-                                alert.setHeaderText("Log In Successfully");
-                                alert.setContentText("You have successfully logged in : " + adminName);
-                                alert.showAndWait();
-                                try {
-                                    adminPage = new AdminPage(stage);
-                                    Scene scene = adminPage.getScene();
-                                    scene.getStylesheets().add("style.css");
-                                    stage.setScene(scene);
-                                    stage.show();
-                                }catch (IOException e){
-                                    System.out.println(e);
-                                }
-                            }else {
-
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Error");
-                                alert.setHeaderText("Email or password is incorrect");
-                                alert.showAndWait();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
                             }
                         }
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(loginTeacherResponse.getErrorDTO().getErrorMessage());
+                        alert.showAndWait();
+                    }
+                } else if (adminRadioButton.isSelected()) {
+                    SSMSAdminDataAccessLayerImpl ssmsAdminDataAccessLayer = new SSMSAdminDataAccessLayerImpl();
+                    AdminLoginService adminLoginService = new AdminLoginService(ssmsAdminDataAccessLayer);
+                    LoginResponse loginAdminResponse = adminLoginService.prepareAdminLogin(emailTextField.getText(), passwordTextField.getText());
+
+                    if (loginAdminResponse.getErrorDTO() == null) {
+                        if (loginAdminResponse.getObject() instanceof Admin) {
+                            Admin admin = (Admin) loginAdminResponse.getObject();
+                            try {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Done");
+                                alert.setHeaderText("Log In Successfully");
+                                alert.setContentText("You have successfully logged in : " + admin.getName());
+                                alert.showAndWait();
+                                adminPage = new AdminPage(stage, admin);
+                                Scene scene = adminPage.getScene();
+                                scene.getStylesheets().add("Style.css");
+                                stage.setScene(scene);
+                                stage.show();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(loginAdminResponse.getErrorDTO().getErrorMessage());
+                        alert.showAndWait();
                     }
 
-                } catch (SQLException e) {
-                    System.out.println(e);
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException(e);
-                }
-
-
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.out.println(e);
                 }
             }else {
-                if (email.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The email is empty");
-                    alert.showAndWait();
-                }else if (password.isEmpty()){
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("The password is empty");
-                    alert.showAndWait();
-                }else{
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Invalid email");
-                    alert.showAndWait();
-                }
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Choice one of the radio button");
+                alert.showAndWait();
             }
+
         });
     }
 

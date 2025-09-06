@@ -1,5 +1,6 @@
 package com.example.demo5.ui;
 
+import com.example.demo5.model.Teacher;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,19 +14,18 @@ public class TeacherPage {
     Button searchButton;
     Button setDegreeButton;
     Button logOutButton;
-    int teacherID;
     Stage stage;
     LogInPage logInPage;
     TeacherProfilePage teacherProfilePage;
     GridPane grid;
     SearchStudentPage searchStudentPage;
-    SetDegreePage setDegreePage;
     StudentsTableView studentsTableView;
     SetDegreePageTableView setDegreePageTableView;
+    Teacher teacher;
 
 
-    TeacherPage (Stage stage , int teacherID) throws IOException {
-        this.teacherID = teacherID;
+    TeacherPage (Stage stage , Teacher teacher) throws IOException {
+        this.teacher = teacher;
         this.stage = stage;
         initControls();
         renderScene();
@@ -61,7 +61,7 @@ public class TeacherPage {
     void initActions (){
 
         profileButton.setOnAction(event -> {
-           teacherProfilePage = new TeacherProfilePage(stage,teacherID);
+           teacherProfilePage = new TeacherProfilePage(stage,teacher);
            Scene scene = teacherProfilePage.getScene();
            scene.getStylesheets().add("Style.css");
            stage.setScene(scene);
@@ -80,7 +80,7 @@ public class TeacherPage {
 
         searchButton.setOnAction(event -> {
             try{
-                searchStudentPage = new SearchStudentPage(stage,teacherID);
+                searchStudentPage = new SearchStudentPage(stage,teacher);
                 Scene scene = searchStudentPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -91,17 +91,8 @@ public class TeacherPage {
         });
 
         setDegreeButton.setOnAction(event -> {
-//           try{
-//               setDegreePage = new SetDegreePage(stage,teacherID);
-//               Scene scene = setDegreePage.getScene();
-//               scene.getStylesheets().add("Style.css");
-//               stage.setScene(scene);
-//               stage.show();
-//           }catch (Exception e){
-//               System.out.println(e);
-//           }
             try{
-                setDegreePageTableView = new SetDegreePageTableView(stage , teacherID);
+                setDegreePageTableView = new SetDegreePageTableView(stage , teacher);
                 Scene scene = setDegreePageTableView.getScene();
                 stage.setScene(scene);
                 stage.show();

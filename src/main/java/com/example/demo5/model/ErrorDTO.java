@@ -6,7 +6,7 @@ public class ErrorDTO {
     public ErrorDTO(String error){
         this.error = error;
     }
-    public String getError(){
+    public String getErrorMessage(){
         return error;
     }
 }

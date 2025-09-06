@@ -1,5 +1,6 @@
 package com.example.demo5.ui;
 
+import com.example.demo5.model.Teacher;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -20,37 +21,25 @@ public class TeacherProfilePage {
     Button backButton;
     TeacherPage teacherPage;
     Stage stage;
-    int teacherId;
     GridPane gridPain;
+    Teacher teacher;
 
-    public TeacherProfilePage(Stage stage , int teacherId ) {
+    public TeacherProfilePage(Stage stage , Teacher teacher) {
         this.stage = stage;
-        this.teacherId = teacherId;
+        this.teacher = teacher;
         initControls();
         renderScene();
         applyScene();
         initActions();
     }
 
-    void initControls(){
-        try{
-        Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
-        String query = "SELECT * FROM Teachers WHERE id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, teacherId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        idLabel = new Label("ID : " +  resultSet.getString("id"));
-        nameLabel = new Label("Name : " +  resultSet.getString("name"));
-        emailLabel = new Label("Email : " +  resultSet.getString("email"));
-        phoneLabel = new Label("Phone : " +  resultSet.getString("phoneNO"));
-        connection.close();
-        backButton = new Button("back");
+    void initControls() {
         gridPain = new GridPane();
-
-    } catch (Exception e) {
-        System.out.println(e);
-    }
+        idLabel = new Label("ID : " + teacher.getId());
+        nameLabel = new Label("Name : " + teacher.getName());
+        emailLabel = new Label("Email : " + teacher.getEmail());
+        phoneLabel = new Label("Phone : " +teacher.getPhoneNO());
+        backButton = new Button("back");
     }
 
     void renderScene(){
@@ -75,7 +64,7 @@ public class TeacherProfilePage {
     void initActions(){
         backButton.setOnAction(e -> {
             try {
-                teacherPage = new TeacherPage(stage, teacherId);
+                teacherPage = new TeacherPage(stage, teacher);
                 Scene scene = teacherPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);

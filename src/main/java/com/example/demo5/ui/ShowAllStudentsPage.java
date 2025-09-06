@@ -1,5 +1,6 @@
 package com.example.demo5.ui;
 
+import com.example.demo5.model.Admin;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
@@ -12,9 +13,11 @@ public class ShowAllStudentsPage {
     Button backButton ;
     AdminPage adminPage;
     Stage stage;
+    Admin admin;
 
-ShowAllStudentsPage(Stage stage){
+ShowAllStudentsPage(Stage stage , Admin admin){
     this.stage=stage;
+    this.admin = admin;
     initControls();
     renderScene();
     applyScene();
@@ -40,7 +43,7 @@ ShowAllStudentsPage(Stage stage){
     void initActions(){
         backButton.setOnAction(e -> {
             try {
-                adminPage = new AdminPage(stage);
+                adminPage = new AdminPage(stage , admin);
                 Scene scene =  adminPage.getScene();
                 scene.getStylesheets().add("style.css");
                 stage.setScene(scene);

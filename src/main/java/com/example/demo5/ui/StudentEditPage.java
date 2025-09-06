@@ -1,8 +1,9 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.db.SqlLiteStudentDataAccessLayerImpl;
+import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
 import com.example.demo5.model.ErrorDTO;
 import com.example.demo5.model.Student;
+import com.example.demo5.model.Teacher;
 import com.example.demo5.service.SetStudentDegreeService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -24,13 +25,13 @@ public class StudentEditPage {
     Button backButton;
     Button saveChangesButton;
     Stage stage;
-    int teacherId;
     Student student;
     GridPane gridPane;
+    Teacher teacher;
 
-    public StudentEditPage(Stage stage , int teacherId , Student student){
+    public StudentEditPage(Stage stage , Teacher teacher, Student student){
         this.stage = stage;
-        this.teacherId = teacherId;
+        this.teacher = teacher;
         this.student = student;
         initControls();
         renderScene();
@@ -77,22 +78,22 @@ public class StudentEditPage {
 
     public void initActions(){
         backButton.setOnAction( e ->{
-            SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacherId);
+            SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacher);
             Scene scene = setDegreePageTableView.getScene();
             stage.setScene(scene);
             stage.show();
         });
         saveChangesButton.setOnAction(e->{
-            SqlLiteStudentDataAccessLayerImpl sqlLiteStudentDataAccessLayer = new SqlLiteStudentDataAccessLayerImpl();
+            SSMSStudentDataAccessLayerImpl sqlLiteStudentDataAccessLayer = new SSMSStudentDataAccessLayerImpl();
             SetStudentDegreeService setStudentDegreeService = new SetStudentDegreeService(sqlLiteStudentDataAccessLayer);
             ErrorDTO errorDTO = setStudentDegreeService.prepareTOSetStudentDegree(nameTextField.getText(),cgpaTextField.getText(),levelTextField.getText());
-            if (errorDTO.getError()==null){
+            if (errorDTO.getErrorMessage()==null){
                 if (sqlLiteStudentDataAccessLayer.editStudent(student.getId() , nameTextField.getText(),Double.parseDouble(cgpaTextField.getText()),Integer.parseInt(levelTextField.getText()))){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Done");
                     alert.setHeaderText("Changes have been saved");
                     alert.showAndWait();
-                    SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacherId);
+                    SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacher);
                     Scene scene = setDegreePageTableView.getScene();
                     stage.setScene(scene);
                     stage.show();
@@ -100,7 +101,7 @@ public class StudentEditPage {
             }else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
-                alert.setHeaderText(errorDTO.getError());
+                alert.setHeaderText(errorDTO.getErrorMessage());
                 alert.showAndWait();
             }
         });

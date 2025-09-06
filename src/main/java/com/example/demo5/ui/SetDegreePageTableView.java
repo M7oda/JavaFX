@@ -1,6 +1,7 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.model.Student;
+import com.example.demo5.model.Teacher;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,14 +19,14 @@ public class SetDegreePageTableView {
     TeacherPage teacherPage;
     Stage stage;
     Button backButton;
-    int teacherId;
     Button selectButton;
     TextField searchByNameTextField;
     TextField searchByIdTextField;
+    Teacher teacher;
 
-    public SetDegreePageTableView(Stage stage , int teacherId){
+    public SetDegreePageTableView(Stage stage , Teacher teacher){
         this.stage = stage;
-        this.teacherId = teacherId;
+        this.teacher = teacher;
         initControls();
         renderScene();
         applyScene();
@@ -36,7 +37,7 @@ public class SetDegreePageTableView {
         backButton = new Button("Back");
         selectButton = new Button("Select Student");
         searchByNameTextField = new TextField();
-        searchByNameTextField.setPromptText("Search by name : ");
+        searchByNameTextField.setPromptText("Search by studentName : ");
         searchByIdTextField = new TextField();
         searchByIdTextField.setPromptText("Search by ID : ");
     }
@@ -83,7 +84,7 @@ public class SetDegreePageTableView {
     void initActions(){
         backButton.setOnAction(e -> {
             try {
-                teacherPage = new TeacherPage(stage , teacherId);
+                teacherPage = new TeacherPage(stage , teacher);
                 Scene scene =  teacherPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -95,7 +96,7 @@ public class SetDegreePageTableView {
         selectButton.setOnAction(e->{
             Student selectedStudent = (Student) StudentsTableView.teacherTableView.getSelectionModel().getSelectedItem();
             if (selectedStudent!=null) {
-                StudentEditPage studentEditPage = new StudentEditPage(stage, teacherId, selectedStudent);
+                StudentEditPage studentEditPage = new StudentEditPage(stage, teacher, selectedStudent);
                 Scene scene = studentEditPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -112,7 +113,7 @@ public class SetDegreePageTableView {
 //            SetStudentDegreeService setStudentDegreeService = new SetStudentDegreeService(sqlLiteStudentDataAccessLayer);
 //            Student selectedStudent = (Student) StudentsTableView.teacherTableView.getSelectionModel().getSelectedItem();
 //            ErrorDTO errorDTO = setStudentDegreeService.prepareTOSetStudentDegree(cgpaTextField.getText(),selectedStudent );
-//            if (errorDTO.getError() == null){
+//            if (errorDTO.getErrorMessage() == null){
 //                if (sqlLiteStudentDataAccessLayer.setStudentDegree(selectedStudent.getId() , Double.parseDouble(cgpaTextField.getText()))){
 //                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //                    alert.setTitle("Done");
@@ -131,7 +132,7 @@ public class SetDegreePageTableView {
 //        }else {
 //            Alert alert = new Alert(Alert.AlertType.ERROR);
 //            alert.setTitle("Error");
-//            alert.setHeaderText(errorDTO.getError());
+//            alert.setHeaderText(errorDTO.getErrorMessage());
 //            alert.showAndWait();
 //        }
 //

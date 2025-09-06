@@ -1,18 +1,21 @@
 package com.example.demo5.db;
 
-import com.example.demo5.model.ErrorDTO;
+import com.example.demo5.model.Student;
 
 import java.sql.*;
 
-public class SqlLiteStudentDataAccessLayerImpl implements StudentDataAccessLayer{
+public class SSMSStudentDataAccessLayerImpl implements StudentDataAccessLayer{
 
     @Override
-    public void saveStudent(String name , String email , String password ,int level) {
+    public void saveStudent(String name , String email , String password) {
         try {
             Connection connection = CreateConnection.createConnection();
-            Statement statement = connection.createStatement();
-            String query = "INSERT INTO Students (name , email, password , level ) VALUES ('" + name + "', '" + email + "', '" + password + "' , '" +  level + "' )";
-            statement.executeUpdate(query);
+            String query = "INSERT INTO Students (name , email, password) VALUES (? , ? , ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1,name);
+            statement.setString(2,email);
+            statement.setString(3,password);
+            statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -72,4 +75,29 @@ public class SqlLiteStudentDataAccessLayerImpl implements StudentDataAccessLayer
         }
         return false;
     }
+
+    public Student studentLogin(String email, String password){
+        try{
+            Connection connection = CreateConnection.createConnection();
+            String query = "SELECT * FROM Students WHERE email = ? AND password = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()){
+                return new Student(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        resultSet.getDouble("cgpa"),
+                        resultSet.getInt("level")
+                );
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 }

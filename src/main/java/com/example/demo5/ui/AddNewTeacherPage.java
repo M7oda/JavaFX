@@ -1,9 +1,8 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.db.SqlLiteTeacherDataAccessLayerImpl;
-import com.example.demo5.db.TeacherDataAccessLayer;
+import com.example.demo5.db.SSMSTeacherDataAccessLayerImpl;
+import com.example.demo5.model.Admin;
 import com.example.demo5.model.ErrorDTO;
-import com.example.demo5.model.Teacher;
 import com.example.demo5.service.AddNewTeacherService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,10 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class AddNewTeacherPage {
     Label nameLabel;
@@ -30,9 +25,10 @@ public class AddNewTeacherPage {
     Button backButton;
     GridPane gridPane;
     Stage stage;
-
-    public AddNewTeacherPage(Stage stage)throws IOException {
+    Admin admin;
+    public AddNewTeacherPage(Stage stage , Admin admin)throws IOException {
         this.stage = stage;
+        this.admin = admin;
         initControls();
         renderScene();
         applyScene();
@@ -85,17 +81,17 @@ public class AddNewTeacherPage {
 
     void initActions(){
         addNewTeacherButton.setOnAction(event -> {
-            SqlLiteTeacherDataAccessLayerImpl sqlLiteTeacherDataAccessLayer = new SqlLiteTeacherDataAccessLayerImpl();
+            SSMSTeacherDataAccessLayerImpl sqlLiteTeacherDataAccessLayer = new SSMSTeacherDataAccessLayerImpl();
             AddNewTeacherService addNewTeacherService = new AddNewTeacherService(sqlLiteTeacherDataAccessLayer);
             ErrorDTO errorDTO = addNewTeacherService.prepareToCreateTeacher(nameTextField.getText(),phoneTextField.getText(),emailTextField.getText(),passwordTextField.getText());
-            if (errorDTO.getError() == null){
-                sqlLiteTeacherDataAccessLayer.saveTeacher(nameTextField.getText(),phoneTextField.getText(),emailTextField.getText(),passwordTextField.getText());
+            if (errorDTO.getErrorMessage() == null){
+                try{
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Done");
                 alert.setHeaderText("Add New Teacher Successfully");
                 alert.showAndWait();
-                try{
-                    AdminPage adminPage = new AdminPage(stage);
+
+                    AdminPage adminPage = new AdminPage(stage ,admin );
                     Scene scene = adminPage.getScene();
                     scene.getStylesheets().add("Style.css");
                     stage.setScene(scene);
@@ -106,14 +102,14 @@ public class AddNewTeacherPage {
             }else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
-                alert.setHeaderText(errorDTO.getError());
+                alert.setHeaderText(errorDTO.getErrorMessage());
                 alert.showAndWait();
             }
         });
 
         backButton.setOnAction(event -> {
             try {
-                AdminPage adminPage = new AdminPage(stage);
+                AdminPage adminPage = new AdminPage(stage , admin);
                 Scene scene = adminPage.getScene();
                 scene.getStylesheets().add("style.css");
                 stage.setScene(scene);

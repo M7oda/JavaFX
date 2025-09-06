@@ -1,20 +1,15 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.db.SqlLiteStudentDataAccessLayerImpl;
+import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
+import com.example.demo5.model.Teacher;
 import com.example.demo5.service.AddNewTeacherService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class SetDegreePage {
     Label studentIdLabel;
@@ -26,11 +21,11 @@ public class SetDegreePage {
     GridPane gridPane;
     Stage stage;
     TeacherPage teacherPage;
-    int teacherId;
+    Teacher teacher;
 
-    SetDegreePage(Stage stage, int teacherId) {
+    SetDegreePage(Stage stage, Teacher teacher) {
         this.stage = stage;
-        this.teacherId = teacherId;
+        this.teacher = teacher;
         initControls();
         renderScene();
         applyScene();
@@ -70,13 +65,13 @@ public class SetDegreePage {
 
     void initActions(){
         setDegreeButton.setOnAction(event -> {
-            SqlLiteStudentDataAccessLayerImpl sqlLiteStudentDataAccessLayer = new SqlLiteStudentDataAccessLayerImpl();
+            SSMSStudentDataAccessLayerImpl sqlLiteStudentDataAccessLayer = new SSMSStudentDataAccessLayerImpl();
             AddNewTeacherService addNewTeacherService ;
         });
 
         backButton.setOnAction(event -> {
             try{
-                teacherPage = new TeacherPage(stage, teacherId);
+                teacherPage = new TeacherPage(stage, teacher);
                 Scene scene = teacherPage.getScene();
                 scene.getStylesheets().add("style.css");
                 stage.setScene(scene);

@@ -43,7 +43,15 @@ public class StudentsTableView{
             ResultSet resultSet = preparedStatement.executeQuery();
             studentList = FXCollections.observableArrayList();
             while (resultSet.next()) {
-                studentList.add(new Student(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("email"),resultSet.getString("password"),resultSet.getDouble("cgpa"),resultSet.getInt("level")));
+                studentList.add(new Student(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        resultSet.getDouble("cgpa"),
+                        resultSet.getInt("level")
+                        )
+                );
             }
             studentsTableView.setItems(studentList);
 
@@ -72,7 +80,15 @@ public class StudentsTableView{
             ResultSet resultSet = preparedStatement.executeQuery();
             studentObservableList = FXCollections.observableArrayList();
             while (resultSet.next()){
-                studentObservableList.add(new Student(resultSet.getInt("id"),resultSet.getString("name"),resultSet.getString("email"),resultSet.getString("password"),resultSet.getDouble("cgpa"),resultSet.getInt("level")));
+                studentObservableList.add(new Student(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("password"),
+                        resultSet.getDouble("cgpa"),
+                        resultSet.getInt("level")
+                        )
+                );
             }
             teacherTableView.setItems(studentObservableList);
         }catch (Exception e){

@@ -1,6 +1,7 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.db.CreateConnection;
+import com.example.demo5.model.Student;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,13 +20,14 @@ public class StudentPage {
     Label cgpaLabel;
     Button logOutButton;
     GridPane gridPain;
-    int studentId;
     Stage stage;
     LogInPage logInPage;
 
-    public StudentPage(Stage stage ,int id) {
+    Student student;
+
+    public StudentPage(Stage stage , Student student) {
         this.stage = stage;
-        studentId = id;
+        this.student = student;
         initControls();
         renderScene();
         applyScene();
@@ -33,24 +35,13 @@ public class StudentPage {
     }
 
     void initControls(){
-        try {
-            gridPain = new GridPane();
-            Connection connection = CreateConnection.createConnection();
-            String query = "SELECT * FROM students WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, studentId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                idLabel = new Label("ID : " + resultSet.getString("id"));
-                nameLabel = new Label("Name : " + resultSet.getString("name"));
-                emailLabel = new Label("Email : " + resultSet.getString("email"));
-                levelLabel = new Label("Level : " + resultSet.getString("level"));
-                cgpaLabel = new Label("CGPA : " + resultSet.getString("cgpa"));
-                logOutButton = new Button("Log Out");
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        gridPain = new GridPane();
+        idLabel = new Label("ID : " + student.getId());
+        nameLabel = new Label("Name : " + student.getName());
+        emailLabel = new Label("Email : " + student.getEmail());
+        levelLabel = new Label("Level : " + student.getLevel());
+        cgpaLabel = new Label("CGPA : " + student.getCgpa());
+        logOutButton = new Button("Log Out");
     }
 
     void renderScene(){
@@ -78,8 +69,6 @@ public class StudentPage {
 
             logOutButton.setOnAction(e -> {
                 try {
-
-
                 logInPage = new LogInPage(stage);
                     Scene scene = logInPage.getScene();
                     scene.getStylesheets().add("style.css");
