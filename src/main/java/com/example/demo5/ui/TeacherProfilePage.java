@@ -1,17 +1,13 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.model.Teacher;
+import com.example.demo5.model.TeacherDTO;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class TeacherProfilePage {
     Label idLabel;
@@ -22,11 +18,11 @@ public class TeacherProfilePage {
     TeacherPage teacherPage;
     Stage stage;
     GridPane gridPain;
-    Teacher teacher;
+    TeacherDTO teacherDTO;
 
-    public TeacherProfilePage(Stage stage , Teacher teacher) {
+    public TeacherProfilePage(Stage stage , TeacherDTO teacherDTO) {
         this.stage = stage;
-        this.teacher = teacher;
+        this.teacherDTO = teacherDTO;
         initControls();
         renderScene();
         applyScene();
@@ -35,10 +31,10 @@ public class TeacherProfilePage {
 
     void initControls() {
         gridPain = new GridPane();
-        idLabel = new Label("ID : " + teacher.getId());
-        nameLabel = new Label("Name : " + teacher.getName());
-        emailLabel = new Label("Email : " + teacher.getEmail());
-        phoneLabel = new Label("Phone : " +teacher.getPhoneNO());
+        idLabel = new Label("ID : " + teacherDTO.getId());
+        nameLabel = new Label("Name : " + teacherDTO.getName());
+        emailLabel = new Label("Email : " + teacherDTO.getEmail());
+        phoneLabel = new Label("Phone : " + teacherDTO.getPhoneNO());
         backButton = new Button("back");
     }
 
@@ -64,7 +60,7 @@ public class TeacherProfilePage {
     void initActions(){
         backButton.setOnAction(e -> {
             try {
-                teacherPage = new TeacherPage(stage, teacher);
+                teacherPage = new TeacherPage(stage, teacherDTO);
                 Scene scene = teacherPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);

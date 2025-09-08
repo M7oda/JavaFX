@@ -1,6 +1,7 @@
 package com.example.demo5.db;
 
 import com.example.demo5.model.Student;
+import com.example.demo5.model.StudentDTO;
 
 import java.sql.*;
 
@@ -20,7 +21,7 @@ public class SSMSStudentDataAccessLayerImpl implements StudentDataAccessLayer{
             System.out.println(e);
         }
     }
-    public Boolean searchStudent(int id){
+    public StudentDTO searchStudent(int id){
         try {
             Connection connection = CreateConnection.createConnection();
             String query = "SELECT * FROM students WHERE id = ?";
@@ -28,17 +29,23 @@ public class SSMSStudentDataAccessLayerImpl implements StudentDataAccessLayer{
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()){
-                return true;
+                return new StudentDTO(
+                        resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getDouble("cgpa"),
+                        resultSet.getInt("level")
+                );
             }
         }catch (Exception e){
             System.out.println(e);
         }
-        return false;
+        return null;
     }
 
     public Boolean setStudentDegree(int id , double degree){
         try {
-            if (searchStudent(id)) {
+            if (searchStudent(id)!=null) {
                 Connection connection = CreateConnection.createConnection();
                 String setDegree = "UPDATE Students  SET cgpa = ? WHERE id = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(setDegree);
@@ -57,7 +64,7 @@ public class SSMSStudentDataAccessLayerImpl implements StudentDataAccessLayer{
     public Boolean editStudent (int id , String name , double cgpa , int level ){
         try {
 
-            if (searchStudent(id)) {
+            if (searchStudent(id)!=null) {
                 Connection connection = CreateConnection.createConnection();
                 String query = "UPDATE Students  SET name = ? , cgpa = ? , level = ?  WHERE id = ?";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -76,7 +83,7 @@ public class SSMSStudentDataAccessLayerImpl implements StudentDataAccessLayer{
         return false;
     }
 
-    public Student studentLogin(String email, String password){
+    public int studentLogin(String email, String password){
         try{
             Connection connection = CreateConnection.createConnection();
             String query = "SELECT * FROM Students WHERE email = ? AND password = ?";
@@ -85,19 +92,12 @@ public class SSMSStudentDataAccessLayerImpl implements StudentDataAccessLayer{
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()){
-                return new Student(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("email"),
-                        resultSet.getString("password"),
-                        resultSet.getDouble("cgpa"),
-                        resultSet.getInt("level")
-                );
+                return resultSet.getInt("id");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return -1;
     }
 
 }

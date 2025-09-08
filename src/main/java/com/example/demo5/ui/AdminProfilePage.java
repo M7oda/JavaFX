@@ -1,6 +1,7 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.model.Admin;
+import com.example.demo5.model.AdminDTO;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,7 +13,7 @@ import java.io.IOException;
 
 public class AdminProfilePage {
     Stage stage;
-    Admin admin;
+    AdminDTO adminDTO;
     Label nameLabel;
     Label idLabel;
     Label emailLabel;
@@ -21,9 +22,9 @@ public class AdminProfilePage {
     AdminPage adminPage;
 
 
-    public AdminProfilePage(Stage stage , Admin admin){
+    public AdminProfilePage(Stage stage , AdminDTO adminDTO){
         this.stage = stage;
-        this.admin = admin;
+        this.adminDTO = adminDTO;
         initControls();
         renderScene();
         applyScene();
@@ -32,9 +33,9 @@ public class AdminProfilePage {
 
     public void initControls(){
          gridPane = new GridPane();
-        nameLabel = new Label("Name : " + admin.getName());
-        idLabel = new Label("ID : " + admin.getId());
-        emailLabel = new Label("Email : " + admin.getEmail());
+        nameLabel = new Label("Name : " + adminDTO.getName());
+        idLabel = new Label("ID : " + adminDTO.getId());
+        emailLabel = new Label("Email : " + adminDTO.getEmail());
         backButton = new Button("Back");
     }
     public void renderScene(){
@@ -55,7 +56,7 @@ public class AdminProfilePage {
     public void initActions(){
         backButton.setOnAction(e->{
             try {
-                adminPage = new AdminPage(stage, admin);
+                adminPage = new AdminPage(stage, adminDTO);
                 Scene scene = adminPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);

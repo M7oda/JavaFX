@@ -3,10 +3,7 @@ package com.example.demo5.ui;
 import com.example.demo5.db.SSMSAdminDataAccessLayerImpl;
 import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
 import com.example.demo5.db.SSMSTeacherDataAccessLayerImpl;
-import com.example.demo5.model.Admin;
-import com.example.demo5.model.LoginResponse;
-import com.example.demo5.model.Student;
-import com.example.demo5.model.Teacher;
+import com.example.demo5.model.*;
 import com.example.demo5.service.AdminLoginService;
 import com.example.demo5.service.StudentLoginService;
 import com.example.demo5.service.TeacherLoginService;
@@ -29,8 +26,6 @@ public class LogInPage {
     Label welcomeLabel;
     AdminPage adminPage;
     Stage stage;
-    int studentId;
-    int teacherId;
     StudentPage studentPage;
     TeacherPage teacherPage;
     RadioButton studentRadioButton;
@@ -98,55 +93,48 @@ public class LogInPage {
         loginButton.setOnAction(event -> {
             RadioButton selectedRadioButton = (RadioButton) loginToggleGroup.getSelectedToggle();
             if (selectedRadioButton != null) {
-
-                if (studentRadioButton.isSelected()) {
-                    SSMSStudentDataAccessLayerImpl studentDataAccessLayer = new SSMSStudentDataAccessLayerImpl();
-                    StudentLoginService studentLoginService = new StudentLoginService(studentDataAccessLayer);
-                    LoginResponse loginStudentResponse = studentLoginService.prepareStudentLogin(emailTextField.getText(), passwordTextField.getText());
-                    if (loginStudentResponse.getErrorDTO() == null) {
-                        if (loginStudentResponse.getObject() instanceof Student) {
-                            Student student = (Student) loginStudentResponse.getObject();
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle("Done");
-                            alert.setHeaderText("Log In Successfully");
-                            alert.setContentText("You have successfully logged in : " + student.getName());
-                            alert.showAndWait();
-                            studentPage = new StudentPage(stage, student);
-                            Scene scene = studentPage.getScene();
-                            scene.getStylesheets().add("Style.css");
-                            stage.setScene(scene);
-                            stage.show();
-                        }
-                    } else {
+                if (studentRadioButton.isSelected()){
+                    SSMSStudentDataAccessLayerImpl ssmsStudentDataAccessLayer = new SSMSStudentDataAccessLayerImpl();
+                    StudentLoginService studentLoginService = new StudentLoginService(ssmsStudentDataAccessLayer);
+                    LoginStudentResponse loginStudentResponse = studentLoginService.prepareStudentLogin(emailTextField.getText(),passwordTextField.getText());
+                    if (loginStudentResponse.getErrorDTO()==null){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Done");
+                        alert.setHeaderText("Log In Successfully");
+                        alert.setContentText("You have successfully logged in : " + loginStudentResponse.getStudentDTO().getName());
+                        alert.showAndWait();
+                        studentPage = new StudentPage(stage,loginStudentResponse.getStudentDTO());
+                        Scene scene = studentPage.getScene();
+                        scene.getStylesheets().add("Style.css");
+                        stage.setScene(scene);
+                        stage.show();
+                    }else{
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(loginStudentResponse.getErrorDTO().getErrorMessage());
                         alert.showAndWait();
                     }
-                } else if (teacherRadioButton.isSelected()) {
+                }else if (teacherRadioButton.isSelected()) {
                     SSMSTeacherDataAccessLayerImpl ssmsTeacherDataAccessLayer = new SSMSTeacherDataAccessLayerImpl();
                     TeacherLoginService teacherLoginService = new TeacherLoginService(ssmsTeacherDataAccessLayer);
-                    LoginResponse loginTeacherResponse = teacherLoginService.prepareTeacherLogin(emailTextField.getText(), passwordTextField.getText());
-
-                    if (loginTeacherResponse.getErrorDTO() == null) {
-                        if (loginTeacherResponse.getObject() instanceof Teacher) {
-                            Teacher teacher = (Teacher) loginTeacherResponse.getObject();
+                    LoginTeacherResponse loginTeacherResponse = teacherLoginService.prepareTeacherLogin(emailTextField.getText(),passwordTextField.getText());
+                    if (loginTeacherResponse.getErrorDTO()==null){
+                        try {
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             alert.setTitle("Done");
                             alert.setHeaderText("Log In Successfully");
-                            alert.setContentText("You have successfully logged in : " + teacher.getName());
+                            alert.setContentText("You have successfully logged in : " + loginTeacherResponse.getTeacherDTO().getName());
                             alert.showAndWait();
-                            try {
-                                teacherPage = new TeacherPage(stage, teacher);
-                                Scene scene = teacherPage.getScene();
-                                scene.getStylesheets().add("Style.css");
-                                stage.setScene(scene);
-                                stage.show();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                            teacherPage = new TeacherPage(stage,loginTeacherResponse.getTeacherDTO());
+                            Scene scene = teacherPage.getScene();
+                            scene.getStylesheets().add("Style.css");
+                            stage.setScene(scene);
+                            stage.show();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-                    } else {
+
+                    }else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(loginTeacherResponse.getErrorDTO().getErrorMessage());
@@ -155,27 +143,23 @@ public class LogInPage {
                 } else if (adminRadioButton.isSelected()) {
                     SSMSAdminDataAccessLayerImpl ssmsAdminDataAccessLayer = new SSMSAdminDataAccessLayerImpl();
                     AdminLoginService adminLoginService = new AdminLoginService(ssmsAdminDataAccessLayer);
-                    LoginResponse loginAdminResponse = adminLoginService.prepareAdminLogin(emailTextField.getText(), passwordTextField.getText());
-
-                    if (loginAdminResponse.getErrorDTO() == null) {
-                        if (loginAdminResponse.getObject() instanceof Admin) {
-                            Admin admin = (Admin) loginAdminResponse.getObject();
-                            try {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                alert.setTitle("Done");
-                                alert.setHeaderText("Log In Successfully");
-                                alert.setContentText("You have successfully logged in : " + admin.getName());
-                                alert.showAndWait();
-                                adminPage = new AdminPage(stage, admin);
-                                Scene scene = adminPage.getScene();
-                                scene.getStylesheets().add("Style.css");
-                                stage.setScene(scene);
-                                stage.show();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
+                    LoginAdminResponse loginAdminResponse = adminLoginService.prepareAdminLogin(emailTextField.getText(),passwordTextField.getText());
+                    if (loginAdminResponse.getErrorDTO()==null){
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Done");
+                        alert.setHeaderText("Log In Successfully");
+                        alert.setContentText("You have successfully logged in : " + loginAdminResponse.getAdminDTO().getName());
+                        alert.showAndWait();
+                        try {
+                            adminPage = new AdminPage(stage , loginAdminResponse.getAdminDTO());
+                            Scene scene = adminPage.getScene();
+                            scene.getStylesheets().add("Style.css");
+                            stage.setScene(scene);
+                            stage.show();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-                    } else {
+                    }else {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText(loginAdminResponse.getErrorDTO().getErrorMessage());

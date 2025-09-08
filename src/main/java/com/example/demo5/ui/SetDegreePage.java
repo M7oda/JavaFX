@@ -2,6 +2,7 @@ package com.example.demo5.ui;
 
 import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
 import com.example.demo5.model.Teacher;
+import com.example.demo5.model.TeacherDTO;
 import com.example.demo5.service.AddNewTeacherService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,11 +22,11 @@ public class SetDegreePage {
     GridPane gridPane;
     Stage stage;
     TeacherPage teacherPage;
-    Teacher teacher;
+    TeacherDTO teacherDTO;
 
-    SetDegreePage(Stage stage, Teacher teacher) {
+    SetDegreePage(Stage stage, TeacherDTO teacherDTO) {
         this.stage = stage;
-        this.teacher = teacher;
+        this.teacherDTO = teacherDTO;
         initControls();
         renderScene();
         applyScene();
@@ -71,7 +72,7 @@ public class SetDegreePage {
 
         backButton.setOnAction(event -> {
             try{
-                teacherPage = new TeacherPage(stage, teacher);
+                teacherPage = new TeacherPage(stage, teacherDTO);
                 Scene scene = teacherPage.getScene();
                 scene.getStylesheets().add("style.css");
                 stage.setScene(scene);

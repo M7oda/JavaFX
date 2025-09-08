@@ -1,6 +1,7 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.model.Teacher;
+import com.example.demo5.model.TeacherDTO;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,11 +22,11 @@ public class TeacherPage {
     SearchStudentPage searchStudentPage;
     StudentsTableView studentsTableView;
     SetDegreePageTableView setDegreePageTableView;
-    Teacher teacher;
+    TeacherDTO teacherDTO;
 
 
-    TeacherPage (Stage stage , Teacher teacher) throws IOException {
-        this.teacher = teacher;
+    TeacherPage (Stage stage , TeacherDTO teacherDTO) throws IOException {
+        this.teacherDTO = teacherDTO;
         this.stage = stage;
         initControls();
         renderScene();
@@ -61,7 +62,7 @@ public class TeacherPage {
     void initActions (){
 
         profileButton.setOnAction(event -> {
-           teacherProfilePage = new TeacherProfilePage(stage,teacher);
+           teacherProfilePage = new TeacherProfilePage(stage,teacherDTO);
            Scene scene = teacherProfilePage.getScene();
            scene.getStylesheets().add("Style.css");
            stage.setScene(scene);
@@ -80,7 +81,7 @@ public class TeacherPage {
 
         searchButton.setOnAction(event -> {
             try{
-                searchStudentPage = new SearchStudentPage(stage,teacher);
+                searchStudentPage = new SearchStudentPage(stage,teacherDTO);
                 Scene scene = searchStudentPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -92,7 +93,7 @@ public class TeacherPage {
 
         setDegreeButton.setOnAction(event -> {
             try{
-                setDegreePageTableView = new SetDegreePageTableView(stage , teacher);
+                setDegreePageTableView = new SetDegreePageTableView(stage , teacherDTO);
                 Scene scene = setDegreePageTableView.getScene();
                 stage.setScene(scene);
                 stage.show();

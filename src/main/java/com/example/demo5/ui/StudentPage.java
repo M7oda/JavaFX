@@ -2,6 +2,7 @@ package com.example.demo5.ui;
 
 import com.example.demo5.db.CreateConnection;
 import com.example.demo5.model.Student;
+import com.example.demo5.model.StudentDTO;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,12 +23,11 @@ public class StudentPage {
     GridPane gridPain;
     Stage stage;
     LogInPage logInPage;
+    StudentDTO studentDTO;
 
-    Student student;
-
-    public StudentPage(Stage stage , Student student) {
+    public StudentPage(Stage stage , StudentDTO studentDTO) {
         this.stage = stage;
-        this.student = student;
+        this.studentDTO = studentDTO;
         initControls();
         renderScene();
         applyScene();
@@ -36,11 +36,11 @@ public class StudentPage {
 
     void initControls(){
         gridPain = new GridPane();
-        idLabel = new Label("ID : " + student.getId());
-        nameLabel = new Label("Name : " + student.getName());
-        emailLabel = new Label("Email : " + student.getEmail());
-        levelLabel = new Label("Level : " + student.getLevel());
-        cgpaLabel = new Label("CGPA : " + student.getCgpa());
+        idLabel = new Label("ID : " + studentDTO.getId());
+        nameLabel = new Label("Name : " + studentDTO.getName());
+        emailLabel = new Label("Email : " + studentDTO.getEmail());
+        levelLabel = new Label("Level : " + studentDTO.getLevel());
+        cgpaLabel = new Label("CGPA : " + studentDTO.getCgpa());
         logOutButton = new Button("Log Out");
     }
 

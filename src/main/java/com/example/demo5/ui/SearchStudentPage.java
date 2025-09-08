@@ -1,6 +1,7 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.model.Teacher;
+import com.example.demo5.db.CreateConnection;
+import com.example.demo5.model.TeacherDTO;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -12,7 +13,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -28,11 +28,11 @@ Label studentLevelReselteLabel;
 GridPane gridPane;
 Stage stage;
 TeacherPage teacherPage;
-Teacher teacher;
+TeacherDTO teacherDTO;
 
-SearchStudentPage(Stage stage , Teacher teacher){
+SearchStudentPage(Stage stage , TeacherDTO teacherDTO){
     this.stage=stage;
-    this.teacher=teacher;
+    this.teacherDTO = teacherDTO;
     initControls();
     renderScene();
     applyScene();
@@ -79,7 +79,7 @@ void applyScene(){
 void initActions(){
     backButton.setOnAction(event->{
         try {
-            teacherPage = new TeacherPage(stage, teacher);
+            teacherPage = new TeacherPage(stage, teacherDTO);
             Scene scene = teacherPage.getScene();
             scene.getStylesheets().add("style.css");
             stage.setScene(scene);
@@ -91,18 +91,16 @@ void initActions(){
     searchButton.setOnAction(event->{
         try {
             String studentId = studentIdTextField.getText();
-            Class.forName("org.sqlite.JDBC");
-            Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/School.db");
+            Connection connection = CreateConnection.createConnection();
             String query = "SELECT * FROM students WHERE id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, Integer.parseInt(studentId));
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                  studentIdReselteLabel.setText("Student ID : "+resultSet.getString("id"));
-                 studentNameReselteLabel.setText("Name : "+resultSet.getString("studentName"));
-                 studentLevelReselteLabel.setText("Level : "+resultSet.getString("studentLevel"));
-                 studentCgpaReselteLabel.setText("CGPA : "+resultSet.getString("studentCgpa"));
-                connection.close();
+                 studentNameReselteLabel.setText("Name : "+resultSet.getString("name"));
+                 studentLevelReselteLabel.setText("Level : "+resultSet.getString("level"));
+                 studentCgpaReselteLabel.setText("CGPA : "+resultSet.getString("cgpa"));
             }else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");

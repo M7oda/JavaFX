@@ -3,7 +3,7 @@ package com.example.demo5.ui;
 import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
 import com.example.demo5.model.ErrorDTO;
 import com.example.demo5.model.Student;
-import com.example.demo5.model.Teacher;
+import com.example.demo5.model.TeacherDTO;
 import com.example.demo5.service.SetStudentDegreeService;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,11 +27,11 @@ public class StudentEditPage {
     Stage stage;
     Student student;
     GridPane gridPane;
-    Teacher teacher;
+    TeacherDTO teacherDTO;
 
-    public StudentEditPage(Stage stage , Teacher teacher, Student student){
+    public StudentEditPage(Stage stage , TeacherDTO teacherDTO, Student student){
         this.stage = stage;
-        this.teacher = teacher;
+        this.teacherDTO = this.teacherDTO;
         this.student = student;
         initControls();
         renderScene();
@@ -78,7 +78,7 @@ public class StudentEditPage {
 
     public void initActions(){
         backButton.setOnAction( e ->{
-            SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacher);
+            SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacherDTO);
             Scene scene = setDegreePageTableView.getScene();
             stage.setScene(scene);
             stage.show();
@@ -93,7 +93,7 @@ public class StudentEditPage {
                     alert.setTitle("Done");
                     alert.setHeaderText("Changes have been saved");
                     alert.showAndWait();
-                    SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacher);
+                    SetDegreePageTableView setDegreePageTableView = new SetDegreePageTableView(stage , teacherDTO);
                     Scene scene = setDegreePageTableView.getScene();
                     stage.setScene(scene);
                     stage.show();

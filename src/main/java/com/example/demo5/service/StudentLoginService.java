@@ -2,9 +2,7 @@ package com.example.demo5.service;
 
 import com.example.demo5.db.StudentDataAccessLayer;
 import com.example.demo5.model.ErrorDTO;
-import com.example.demo5.model.LoginResponse;
-import com.example.demo5.model.Student;
-
+import com.example.demo5.model.LoginStudentResponse;
 public class StudentLoginService {
     StudentDataAccessLayer studentDataAccessLayer;
 
@@ -13,28 +11,28 @@ public class StudentLoginService {
         this.studentDataAccessLayer = studentDataAccessLayer;
     }
 
-    public LoginResponse prepareStudentLogin(String email , String password){
+    public LoginStudentResponse prepareStudentLogin(String email , String password){
 
         if (!email.isEmpty() && !password.isEmpty() && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")){
             try {
                 String hashPassword = PasswordHashingService.getHash(password);
-                Student student = studentDataAccessLayer.studentLogin(email , hashPassword);
-                if (student != null) {
-                    return new LoginResponse(student , null);
+                int id = studentDataAccessLayer.studentLogin(email , hashPassword);
+                if (id != -1) {
+                    return new LoginStudentResponse(studentDataAccessLayer.searchStudent(id),null);
                 }else {
-                    return new LoginResponse(null , new ErrorDTO("Student not found"));
+                    return new LoginStudentResponse(null,new ErrorDTO("Student not found"));
                 }
             }catch (Exception e){
                 System.out.println(e);
             }
         } else if (email.isEmpty()) {
-            return new LoginResponse(null ,new ErrorDTO("The email is empty"));
+            return new LoginStudentResponse(null ,new ErrorDTO("The email is empty"));
         } else if (password.isEmpty()) {
-            return new LoginResponse(null, new ErrorDTO("The password is empty"));
+            return new LoginStudentResponse(null, new ErrorDTO("The password is empty"));
         } else if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
-            return new LoginResponse(null ,new ErrorDTO("Invalid email"));
+            return new LoginStudentResponse(null ,new ErrorDTO("Invalid email"));
         }
-        return new LoginResponse(null,null);
+        return new LoginStudentResponse(null,null);
     }
 
 }

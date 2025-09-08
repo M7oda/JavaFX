@@ -1,6 +1,6 @@
 package com.example.demo5.ui;
 
-import com.example.demo5.model.Admin;
+import com.example.demo5.model.AdminDTO;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,13 +22,13 @@ public class AdminPage {
     ShowAllStudentsPage showAllStudentsPage;
     GridPane gridPane;
     Stage stage;
-    Admin admin;
+    AdminDTO adminDTO;
     Button profileButton;
     AdminProfilePage adminProfilePage;
 
-    public AdminPage(Stage stage , Admin admin)throws IOException{
+    public AdminPage(Stage stage , AdminDTO adminDTO)throws IOException{
         this.stage = stage;
-        this.admin=admin;
+        this.adminDTO = adminDTO;
         initControls();
         renderScene();
         applyScene();
@@ -38,7 +38,7 @@ public class AdminPage {
 
     void initControls(){
         gridPane = new GridPane();
-        welcomeLabel = new Label("Welcome to the Admin Page : " + admin.getName());
+        welcomeLabel = new Label("Welcome to the Admin Page : " + adminDTO.getName());
         addNewStudentButton = new Button("Add New Student");
         addNewTeacherButton = new Button("Add New Teacher");
         logOutButton = new Button("Log Out");
@@ -70,7 +70,7 @@ public class AdminPage {
     void initActions()  {
         addNewStudentButton.setOnAction(event -> {
             try {
-                addNewStudentPage = new AddNewStudentPage(stage , admin);
+                addNewStudentPage = new AddNewStudentPage(stage , adminDTO);
                 Scene scene = addNewStudentPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -82,7 +82,7 @@ public class AdminPage {
 
         addNewTeacherButton.setOnAction(event -> {
             try {
-                addNewTeacherPage = new AddNewTeacherPage(stage, admin);
+                addNewTeacherPage = new AddNewTeacherPage(stage, adminDTO);
                 Scene scene = addNewTeacherPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -103,13 +103,13 @@ public class AdminPage {
             }
         });
         showAllStudentsButton.setOnAction(event -> {
-            showAllStudentsPage = new ShowAllStudentsPage(stage , admin);
+            showAllStudentsPage = new ShowAllStudentsPage(stage , adminDTO);
             Scene scene = showAllStudentsPage.getScene();
             stage.setScene(scene);
             stage.show();
         });
         profileButton.setOnAction(e->{
-            adminProfilePage = new AdminProfilePage(stage , admin);
+            adminProfilePage = new AdminProfilePage(stage , adminDTO);
             Scene scene = adminProfilePage.getScene();
             scene.getStylesheets().add("Style.css");
             stage.setScene(scene);

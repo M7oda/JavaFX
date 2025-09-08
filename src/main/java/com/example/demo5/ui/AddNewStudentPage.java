@@ -1,7 +1,7 @@
 package com.example.demo5.ui;
 
 import com.example.demo5.db.SSMSStudentDataAccessLayerImpl;
-import com.example.demo5.model.Admin;
+import com.example.demo5.model.AdminDTO;
 import com.example.demo5.model.ErrorDTO;
 import com.example.demo5.service.AddNewStudentService;
 import javafx.geometry.Pos;
@@ -23,11 +23,11 @@ public class AddNewStudentPage {
     Button backButton;
     GridPane gridPane;
     Stage stage;
-    Admin admin;
+    AdminDTO adminDTO;
 
-    public AddNewStudentPage(Stage stage , Admin admin) throws IOException {
+    public AddNewStudentPage(Stage stage , AdminDTO adminDTO) throws IOException {
         this.stage = stage;
-        this.admin = admin;
+        this.adminDTO = adminDTO;
         initControls();
         renderScene();
         applyScene();
@@ -83,7 +83,7 @@ public class AddNewStudentPage {
                 alert.setHeaderText("Add New Student Successfully");
                 alert.showAndWait();
                 try {
-                    AdminPage adminPage = new AdminPage(stage , admin);
+                    AdminPage adminPage = new AdminPage(stage , adminDTO);
                     Scene scene = adminPage.getScene();
                     scene.getStylesheets().add("style.css");
                     stage.setScene(scene);
@@ -102,7 +102,7 @@ public class AddNewStudentPage {
         });
         backButton.setOnAction(event -> {
             try {
-                AdminPage adminPage = new AdminPage(stage , admin);
+                AdminPage adminPage = new AdminPage(stage , adminDTO);
                 Scene scene = adminPage.getScene();
                 scene.getStylesheets().add("style.css");
                 stage.setScene(scene);

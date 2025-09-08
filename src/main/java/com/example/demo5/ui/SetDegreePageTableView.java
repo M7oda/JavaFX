@@ -2,6 +2,7 @@ package com.example.demo5.ui;
 
 import com.example.demo5.model.Student;
 import com.example.demo5.model.Teacher;
+import com.example.demo5.model.TeacherDTO;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -22,11 +23,11 @@ public class SetDegreePageTableView {
     Button selectButton;
     TextField searchByNameTextField;
     TextField searchByIdTextField;
-    Teacher teacher;
+    TeacherDTO teacherDTO;
 
-    public SetDegreePageTableView(Stage stage , Teacher teacher){
+    public SetDegreePageTableView(Stage stage , TeacherDTO teacherDTO){
         this.stage = stage;
-        this.teacher = teacher;
+        this.teacherDTO = teacherDTO;
         initControls();
         renderScene();
         applyScene();
@@ -84,7 +85,7 @@ public class SetDegreePageTableView {
     void initActions(){
         backButton.setOnAction(e -> {
             try {
-                teacherPage = new TeacherPage(stage , teacher);
+                teacherPage = new TeacherPage(stage , teacherDTO);
                 Scene scene =  teacherPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
@@ -96,7 +97,7 @@ public class SetDegreePageTableView {
         selectButton.setOnAction(e->{
             Student selectedStudent = (Student) StudentsTableView.teacherTableView.getSelectionModel().getSelectedItem();
             if (selectedStudent!=null) {
-                StudentEditPage studentEditPage = new StudentEditPage(stage, teacher, selectedStudent);
+                StudentEditPage studentEditPage = new StudentEditPage(stage, teacherDTO, selectedStudent);
                 Scene scene = studentEditPage.getScene();
                 scene.getStylesheets().add("Style.css");
                 stage.setScene(scene);
